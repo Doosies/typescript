@@ -1,35 +1,40 @@
 const stdin = (process.platform ==='linux'
 ? require('fs').readFileSync('dev/stdin').toString()
 : `
-3
-0
-1
-3
-10
-20
-30
-40
+1 1 1
+2 2 2
+10 4 6
+50 50 50
+-1 7 18
+15 15 15
+-1 -1 -1
 `
 ).trim().split('\n');
+
 const input = (()=>{
     let line = 0;
-    return ()=> stdin[line++];
+    return ()=>stdin[line++].split(" ").map(Number);
 })();
 
-// const T = +input[0];
-const nums = stdin.slice(1).map(Number);
-let dp = Array.from({length:41}, ()=> Array(2).fill(0));
-dp[0] = [1,0];
-dp[1] = [0,1];
+let dp = {};
+const w = function(a, b, c){
+    if( !dp[`${a},${b},${c}`]){
+        if(a <= 0 || b <= 0 || c <= 0){
+            dp[`${a},${b},${c}`] = 1;
+        }else if(a > 20 || b > 20 || c > 20){
+            dp[`${a},${b},${c}`] =  w(20,20,20);
+        }else if(a < b && b < c){
+            dp[`${a},${b},${c}`] = w(a, b, c-1) + w(a, b-1, c-1) - w(a, b-1, c);
+        }else{
+            dp[`${a},${b},${c}`] = w(a-1, b, c) + w(a-1, b-1, c) + w(a-1, b, c-1) - w(a-1, b-1, c-1);
+        }
+    }
+    return dp[`${a},${b},${c}`];
+};
 
-function fibo(n){
-    dp[n][0] = dp[n-1][0]+dp[n-2][0];
-    dp[n][1] = dp[n-1][1]+dp[n-2][1];
-}
-for( let i = 2; i < 41; i++){
-    fibo(i);
-}
-
-for(let num of nums ){
-    console.log(dp[num][0], dp[num][1]);
+while(true){
+    let [a,b,c] = input();
+    if(a == -1 && b == -1 && c == -1) return; 
+    const result = w(a,b,c);
+    console.log(`w(${a}, ${b}, ${c}) = ${result}`);
 }
