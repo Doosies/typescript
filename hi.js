@@ -1,34 +1,35 @@
-const input = (process.platform === 'linux'
+const stdin = (process.platform ==='linux'
 ? require('fs').readFileSync('dev/stdin').toString()
-: `4
-0 1 2 3
-4 0 5 6
-7 1 0 2
-3 4 5 0
+: `
+3
+0
+1
+3
+10
+20
+30
+40
 `
-).split('\n');
+).trim().split('\n');
+const input = (()=>{
+    let line = 0;
+    return ()=> stdin[line++];
+})();
 
-let n = input[0];
-let board = input.slice(1,-1).map(val => val.split(" ").map( val=> +val));
-// 20개일 떄 10개의 순열
-const len = parseInt(n / 2);
-const pool = Array.from({length:n},(v,i)=>i+1);
+// const T = +input[0];
+const nums = stdin.slice(1).map(Number);
+let dp = Array.from({length:41}, ()=> Array(2).fill(0));
+dp[0] = [1,0];
+dp[1] = [0,1];
 
-function getPermutation(arr, depth){
-    results = []
-    if( depth == 1 )
-        return arr.map(val=>[val]);
-    else{
-        arr.forEach((fixed,idx,array)=>{
-            // fixed를 제외한 값들
-            let rest = [...array.splice(0,idx), ...array.splice(idx+1)];
-            // rest에 대한 순열을 구함.
-            let permutations = getPermutation(rest, depth-1);
-            // fixed와 방금 구한 순열을 더함.
-            let attached = permutations.map(permutation => [fixed, ...permutation]);
-            // 구한 순열들을 results에 푸쉬
-            results.push(...attached);
-        });
-    }
-    return results;
+function fibo(n){
+    dp[n][0] = dp[n-1][0]+dp[n-2][0];
+    dp[n][1] = dp[n-1][1]+dp[n-2][1];
+}
+for( let i = 2; i < 41; i++){
+    fibo(i);
+}
+
+for(let num of nums ){
+    console.log(dp[num][0], dp[num][1]);
 }
