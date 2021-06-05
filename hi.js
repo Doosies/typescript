@@ -1,48 +1,34 @@
-var fs = require('fs');
-var input = fs.readFileSync('/dev/stdin').toString().trim().split('\n');
-var numbers = parseElements(input[1].split(' '));
-var operatorsCount = parseElements(input[2].split(' '));
+const input = (process.platform === 'linux'
+? require('fs').readFileSync('dev/stdin').toString()
+: `4
+0 1 2 3
+4 0 5 6
+7 1 0 2
+3 4 5 0
+`
+).split('\n');
 
-var min = Infinity, max = -Infinity;
+let n = input[0];
+let board = input.slice(1,-1).map(val => val.split(" ").map( val=> +val));
+// 20개일 떄 10개의 순열
+const len = parseInt(n / 2);
+const pool = Array.from({length:n},(v,i)=>i+1);
 
-function findPermutation(idx, operatorsCount, sum) {  
-  if (idx === numbers.length) {
-    max = Math.max(max, sum);
-    min = Math.min(min, sum);
-    return;
-  }
-  
-  for (var i = 0; i < 4; i++) {
-    if (operatorsCount[i] === 0) continue;
-    var count = operatorsCount.slice();
-    count[i]--;
-    findPermutation(idx+1, count, cal(sum, numbers[idx], i)); 
-  }
-}
-
-findPermutation(1, operatorsCount, numbers[0]);
-
-console.log(max);
-console.log(min);
-
-function cal (a, b, op) {
-  
-  if (op === 0) {
-    return a+b;
-  } else if (op === 1) {
-    return a-b;
-  } else if (op === 2) {
-    return a*b;
-  } else {
-    return (a/b) < 0 ? (abs(a) < abs(b) ? abs(Math.ceil(a/b)) : Math.ceil(a/b)): Math.floor(a/b);
-  }
-}
-
-function abs(n) {
-  return Math.abs(n);
-}
-function parseElements(arr) {
-  return arr.map(function (v) {
-    return parseInt(v);
-  });
+function getPermutation(arr, depth){
+    results = []
+    if( depth == 1 )
+        return arr.map(val=>[val]);
+    else{
+        arr.forEach((fixed,idx,array)=>{
+            // fixed를 제외한 값들
+            let rest = [...array.splice(0,idx), ...array.splice(idx+1)];
+            // rest에 대한 순열을 구함.
+            let permutations = getPermutation(rest, depth-1);
+            // fixed와 방금 구한 순열을 더함.
+            let attached = permutations.map(permutation => [fixed, ...permutation]);
+            // 구한 순열들을 results에 푸쉬
+            results.push(...attached);
+        });
+    }
+    return results;
 }
