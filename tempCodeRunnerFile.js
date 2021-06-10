@@ -1,5 +1,3 @@
 
-// for(i=3; i<Math.max(..._case); i++){
-//     arr[i] = (arr[-3] + arr[-2]);
-// }
-// console.log(arr);
+// console.log(`조합: ${getCombination(array, select)}`);
+// console.log(`중복조합: ${getDuplicationCombination(array, select)}`);
