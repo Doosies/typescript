@@ -21,25 +21,10 @@ const input = (()=>{
 
 let n = Number(input());
 let color = Array.from({length:n}, ()=> input());
-let sumList = [];
 
-const solv = (indexes, depth) =>{
-    if(depth == n){
-        let sum = indexes.reduce((acc,curr,i) => {
-            return acc += color[i][curr];
-        }, 0);
-        sumList.push(sum);
-        return;
-    }else{
-        for(let i=0; i<3; i++){
-            if( depth == 0){
-                solv([...indexes, i], depth+1);
-            }else if(indexes[depth-1] != i){
-                solv([...indexes, i], depth+1);
-            }
-        }
-    }
-};
-
-solv([],0)
-console.log(Math.min(...sumList));
+for(let i=1; i<color.length; i++){
+    color[i][0] = Math.min(color[i-1][1], color[i-1][2]) + color[i][0];
+    color[i][1] = Math.min(color[i-1][0], color[i-1][2]) + color[i][1];
+    color[i][2] = Math.min(color[i-1][0], color[i-1][1]) + color[i][2];
+}
+console.log(Math.min(...color[n-1]));
