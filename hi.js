@@ -1,45 +1,65 @@
-const { listenerCount } = require('events');
+// const stdin = (process.platform ==='linux'
+// ? require('fs').readFileSync('dev/stdin').toString()
+// : `
+// abcabcabcabcdededededede
 
-const stdin = (process.platform ==='linux'
-? require('fs').readFileSync('dev/stdin').toString()
-: `
-abcabcabcabcdededededede
+// `// 정답: 75
+// ).trim().split('\n');
+// const input = (()=>{
+//     let line = 0;
+//     return ()=>stdin[line++].split(" ");
+// })();
 
-`// 정답: 75
-).trim().split('\n');
-const input = (()=>{
-    let line = 0;
-    return ()=>stdin[line++].split(" ");
-})();
-
-const solution = (s) =>{
-    s = s.split("");
-    let resultLen = Number.POSITIVE_INFINITY;
-    for(let len=1; len < (s.length/2)+1; len++){
-        let before = '';
-        let nowLenResult = '';
-        for( let i=0; i<s.length; i++){
-            const nowChar = s.slice(i,i+len);
-            let cnt=1;
-            if( nowChar !== before){
-                for( let j= i+len; j<s.length; j+=len){
-                    const nextChar = s.slice(j,j+len);
-                    if( nowChar.join("") === nextChar.join(""))
-                        cnt ++;
-                    else
-                        break;
-                }
-            }
-            before = nowChar;
-            const add = s.slice(i, i+len).join("");
-            i += (cnt * len ) - 1;
-            if( cnt > 1) nowLenResult += `${add}${cnt}`;
-            else nowLenResult += `${add}`;
-        }
-        resultLen = Math.min(nowLenResult.length, resultLen);
+const isCorrectChar = (str) =>{
+    let cnt = 0;
+    for(c of str){
+        if( c === '(' ) cnt ++;
+        else cnt --;
+        if( cnt < 0) return false;
     }
-    return resultLen;
+    return cnt === 0 ? true : false;
 }
-let str = String(input()).split('');
-const s = solution('aabbaccc');
+const isBalancedChar = (str) =>{
+    let cnt = 0;
+    for(c of str){
+        if( c === '(' ) cnt ++;
+        else cnt --;
+    }
+    return cnt === 0 ? true : false;
+}
+const getUV = (str) =>{
+    let stackStr = '';
+    for( let i=0; i<str.length; i++){
+        stackStr += str[i];
+        if( isBalancedChar(stackStr)){
+            return [stackStr, str.slice(i+1, str.length)];
+        }
+    }
+}
+const getReverse = (str) =>{
+    let reversed = '';
+    for(let c of str){
+        if( c === '(') reversed += ')';
+        else reversed += '(';
+    }
+    return reversed;
+}
+const solution = (p) =>{
+    if( p == '' ) return '';
+    let [u, v] = getUV(p);
+    // 문자열 u가 올바른 괄호 문자열이라면
+    if( isCorrectChar(u) ){
+        return u + solution(v);
+    // 문자열 u가 올바른 괄호 문자열이 아니라면
+    }else{
+        let str = '(';
+        str += solution(v);
+        str += ')';
+        str += getReverse(u.slice(1,u.length-1));
+        return str;
+    }
+}
+
+const str = '()))((()';
+const s = solution(str);
 console.log(s);
