@@ -14,15 +14,15 @@ const input = (()=>{
 const n = Number(input());
 const arr = input().map(v => Number(v));
 const dp = [1];
+const result = -1;
 
 for(let i=1, l=arr.length; i<l; i++){
     dp[i] = 1;
     for( let j=i; j>=0; j--){
-        if( arr[j] > arr[i] && dp[j] >= dp[i] ){
+        if( arr[j] < arr[i] && dp[j] <= dp[i] ){
             dp[i] = dp[j] +1;
         }
     }
 }
 
-console.log(dp);
-console.log(dp[n-1]);
+console.log(Math.max(...dp));
