@@ -1,69 +1,43 @@
-type inputType = () => number[];
+type inputType = () => string[];
 
 const stdin: string = (process.platform ==='linux'
 ? require('fs').readFileSync('dev/stdin').toString()
 : `
-8
-1 8
-3 9
-2 2
-4 1
-6 4
-10 10
-9 7
-7 6
+AABBAA
+BA
 `).trim().split('\n');
 const input: inputType = (()=>{
     let line = 0;
-    return () => stdin[line++].split(" ").map((v:string) => Number(v));
+    return () => stdin[line++].toString().split("");
 })();
 
-function getMinus(arr: string[]): number {
-    return Number(arr[0]) - Number(arr[1]);
+
+let longStr: string[] = input();
+longStr.splice(0,0,"0");
+let shortStr: string[] = input();
+shortStr.splice(0,0,"0");
+if (longStr.length < shortStr.length) {
+    [longStr,shortStr] = [shortStr,longStr];
 }
+const endI = longStr.length;
+const endJ = longStr.length;
+const LCS: number[][] = Array.from({length:endI}, () => []);
 
-const n: number = Number(input());
-const arr: number[][] = Array.from({length:n}, ()=> input());
-const dp: number[] = [];
-
-arr.sort((a: number[], b: number[]): number => a[0] - b[0]);
-
-for (let i=0; i<n; i++) {
-    dp[i] = 1;
-    for (let j=0; j<i; j++) {
-        if (arr[i][1] > arr[j][1] ) {
-            dp[i] = Math.max( dp[i], dp[j] + 1);
+for (let i=0; i<endI; i++) {
+    for (let j=0; j<endJ; j++) {
+        if (i === 0 || j === 0) {
+            LCS[i][j] = 0;
+        }
+        else if (longStr[i] === shortStr[j]) {
+            LCS[i][j] = LCS[i-1][j-1] + 1;
+        }
+        else {
+            LCS[i][j] = Math.max(LCS[i][j-1], LCS[i-1][j]);
         }
     }
 }
-const result: number = Math.max(...dp);
-console.log(n - result);
-
-// const stdin = (process.platform ==='linux'
-// ? require('fs').readFileSync('dev/stdin').toString()
-// : `
-// 8
-// 8 2 9 1 4 6 7 10
-// `
-// ).trim().split('\n');
-// const input = (()=>{
-//     let line = 0;
-//     return ()=>stdin[line++].split(" ");
-// })();
-
-
-// const n = Number(input());
-// const arr = input().map(v => Number(v));
-// const dp = [1];
-
-// for(let i=1, l=arr.length; i<l; i++){
-//     dp[i] = 1;
-//     for( let j=i; j>=0; j--){
-//         if( arr[j] > arr[i] && dp[j] >= dp[i] ){
-//             dp[i] = dp[j] +1;
-//         }
-//     }
-// }
-
-// console.log(dp);
-// console.log(dp[n-1]);
+// const maxTmp = LCS.map((row: number[]) => Math.max(...row));
+// const max = Math.max(...maxTmp);
+// console.log(LCS.join("\n"));
+// console.log(LCS);
+console.log(LCS[endI-1][endJ-1]);
