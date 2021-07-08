@@ -16,28 +16,20 @@
 const stdin: string = (process.platform ==='linux'
 ? require('fs').readFileSync(0, 'utf-8')
 : `
-3
-2
+24 18
 `).trim().split('\n');
 const input = (()=>{
     let line = 0;
     return ()=>stdin[line++].split(" ").map((v:string) => +v);
 })();
 
-const N: number = +input();
-const arr: number[] = input();
-arr.sort((a: number, b: number) => a-b);
+function GCD(a: number, b: number): number {
+    return b ? GCD(b, a%b) : a;
+}
 
-const result: number = arr[0] * arr[arr.length-1];
-console.log(result);
+// const N: number = +input();
+const [l,r]: number[] = input();
+const gcd: number = GCD(l,r);
 
-
-// if (N === 1)
-//     console.log(arr[0]**2);
-
-// if (N % 2 === 0) {
-// }
-// else{
-//     const pos: number = Math.floor(arr.length/2);
-//     console.log(arr[pos]**2, pos);
-// }
+console.log(gcd);
+console.log(gcd * (l/gcd) * (r/gcd));
