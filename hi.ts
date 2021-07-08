@@ -16,28 +16,28 @@
 const stdin: string = (process.platform ==='linux'
 ? require('fs').readFileSync(0, 'utf-8')
 : `
-8 16
-32 4
-17 5
-0 0
+3
+2
 `).trim().split('\n');
 const input = (()=>{
     let line = 0;
     return ()=>stdin[line++].split(" ").map((v:string) => +v);
 })();
 
-// const N: number = +input();
-// const arr: number[] = Array.from({length:N}, () => +input());
+const N: number = +input();
+const arr: number[] = input();
+arr.sort((a: number, b: number) => a-b);
 
-while(true) {
-    const [l,r]: number[] = input();
-    let str: string = '';
+const result: number = arr[0] * arr[arr.length-1];
+console.log(result);
 
-    if (l + r === 0) break;
-    if (r % l === 0) str = "factor";
-    else if (l % r === 0) str = "multiple";
-    else str = "neither";
 
-    console.log(str);
-}
+// if (N === 1)
+//     console.log(arr[0]**2);
 
+// if (N % 2 === 0) {
+// }
+// else{
+//     const pos: number = Math.floor(arr.length/2);
+//     console.log(arr[pos]**2, pos);
+// }
