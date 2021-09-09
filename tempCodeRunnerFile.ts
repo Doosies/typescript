@@ -1,2 +1,2 @@
 
-// }
+        // clothes[what].push(name);

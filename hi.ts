@@ -2,32 +2,34 @@ const stdin: string = (process.platform ==='linux'
 ? require('fs').readFileSync(0, 'utf-8')
 // ? require('fs').readFileSync('/dev/stdin')
 : `
+2
 3
-2 2
-1 5
-13 29
+hat headgear
+sunglasses eyewear
+turban headgear
+3
+mask face
+sunglasses face
+makeup face
 `).trim().split('\n');
 const input = (()=>{
     let line = 0;
-    return ()=> stdin[line++].split(" ").map( v => +v);
+    return ()=> stdin[line++].split(" ");//.map( v => +v);
 })();
 
-function mul(time: number, num: number) {
-    let rst = 1;
-    for (let i=0; i<time; i++) {
-        rst *= num;
-        num -= 1;
-    }
-    return rst;
-}
-
+interface Clothe { [thing: string]: Array<string>;}
 const c = +input();
+
 for (let i=0; i<c; i++) {
-    let [n, m] = input();
-    if (m/2 < n) n = m - n;
-
-    const top = mul(n, m);
-    const bottom = mul(n, n);
-    console.log(top/bottom);
-}
-
+    const kind = +input();
+    const clothes: Clothe= {};
+    for (let j=0; j<kind; j++) {
+        const [name, what] = input();
+        clothes[what] ||= [];
+        clothes[what].push(name);
+    }
+    
+    const cntArr = Object.entries(clothes).map( v => v[1].length);
+    const result = cntArr.reduce((acc,curr) => acc * (curr+1),1) -1;
+    console.log(result);
+} 
