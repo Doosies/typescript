@@ -1,21 +1,33 @@
 const stdin: string = (process.platform ==='linux'
 ? require('fs').readFileSync(0, 'utf-8')
+// ? require('fs').readFileSync('/dev/stdin')
 : `
-55 8
+3
+2 2
+1 5
+13 29
 `).trim().split('\n');
 const input = (()=>{
     let line = 0;
-    return ()=>stdin[line++].split(" ").map((v:string) => +v);
+    return ()=> stdin[line++].split(" ").map( v => +v);
 })();
 
-const [n, k]: number[] = input();
-let result: number[][] = Array.from({length:n+1}, ()=>[1]);
-
-for (let i=0; i<= n; i++) {
-    for (let j=0; j<=i; j++) {
-        if (j===0 || j===i) result[i][j] = 1;
-        else result[i][j] = (result[i-1][j-1]% 10007 + result[i-1][j]% 10007)%10007;
+function mul(time: number, num: number) {
+    let rst = 1;
+    for (let i=0; i<time; i++) {
+        rst *= num;
+        num -= 1;
     }
+    return rst;
 }
 
-console.log(result[n][k] % 10007);
+const c = +input();
+for (let i=0; i<c; i++) {
+    let [n, m] = input();
+    if (m/2 < n) n = m - n;
+
+    const top = mul(n, m);
+    const bottom = mul(n, n);
+    console.log(top/bottom);
+}
+
