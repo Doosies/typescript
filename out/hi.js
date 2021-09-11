@@ -1,47 +1,30 @@
 const stdin = (process.platform === 'linux'
     ? require('fs').readFileSync(0, 'utf-8')
     : `
-So when I die (the [first] I will see in (heaven) is a score list).
-[ first in ] ( first out ).
-Half Moon tonight (At least it is better than no Moon at all].
-A rope may form )( a trail in a maze.
-Help( I[m being held prisoner in a fortune cookie factory)].
-([ (([( [ ] ) ( ) (( ))] )) ]).
- .
-.
+2
+1
+2
 `).trim().split('\n');
-const input = (() => {
-    let line = 0;
-    return () => stdin[line++]; //.split("").map( v => +v);
-})();
-const b = {
-    l: {
-        '[': ']',
-        '(': ')'
-    },
-    r: {
-        ']': '[',
-        ')': '(',
+// const input = (()=>{
+//     let line = 0;
+//     return ()=> stdin[line++];//.split("").map( v => +v);
+// })();
+const tmp = [1];
+const rst = [];
+let now = 1;
+for (let i = 1; i <= +stdin[0]; i++) {
+    const num = +stdin[i];
+    if (tmp[tmp.length - 1] > num)
+        break;
+    while (tmp[tmp.length - 1] < num) {
+        tmp.push(++now);
+        rst.push('+');
     }
-};
-function isPassed(str) {
-    const stack = [];
-    for (let s of str) {
-        if (b.l[s])
-            stack.push(s);
-        else if (b.r[s]) {
-            if (s !== b.l[stack.pop()]) {
-                return false;
-            }
-        }
-    }
-    if (stack.length === 0)
-        return true;
-    else
-        return false;
+    tmp.pop();
+    rst.push('-');
 }
-for (let s of stdin) {
-    if (s !== '.')
-        console.log(isPassed(s) ? 'yes' : 'no');
-}
+if (+stdin[0] !== now)
+    console.log('NO');
+else
+    rst.forEach(v => console.log(v));
 //# sourceMappingURL=hi.js.map
