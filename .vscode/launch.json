@@ -8,10 +8,10 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "Launch typejs Program",
+      "name": "타입스크립트",
       "program": "${workspaceFolder}/hi.ts",
       "preLaunchTask": "tsc: build - tsconfig.json",
-      "outFiles": ["${workspaceFolder}/out/**/*.js"]
+      "outFiles": ["${workspaceFolder}/**/*.js"]
     }
   ]
 }
