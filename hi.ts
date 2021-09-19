@@ -1,35 +1,27 @@
 const stdin: string[] = (process.platform ==='linux'
 ? require('fs').readFileSync(0, 'utf-8')
 : `
-3
-3
-1
-2
+20
+5 4 6 9 8 41 3 2 1 5 4 7 5 52 4 5 5 4 5 45
 `).trim().split('\n');
-// const input = (()=>{
-//     let line = 0;
-//     return ()=> stdin[line++];//.split("").map( v => +v);
-// })();
+const input = (()=>{
+    let line = 0;
+    return ()=> stdin[line++].split(" ").map( v => +v);
+})();
 
-const tmp: number[] = [];
-let rst: string = '';
-let now = 0;
-let isNo = false;
+const C = +input();
+const arr = input();
+const stack: number[] = [];
+let cnt = 0;
 
-for (let i=1; i<= +stdin[0]; i++) {
-    const num = +stdin[i];
-    if (tmp[tmp.length-1] > num) {
-        isNo = true;
-        break;
+for (let i=0; i<C; i++) {
+    while (stack.length  && arr[i] > arr[stack[stack.length-1]]) {
+        arr[stack.pop()] = arr[i];
     }
-
-    while (tmp[tmp.length-1] < num || tmp.length === 0) {
-        tmp.push(++now);
-        rst += '+\n';
-    }
-    tmp.pop();
-    rst += ('-\n');
+    stack.push(i);
+}
+while (stack.length) {
+    arr[stack.pop()] =-1;
 }
 
-if (isNo) console.log('NO');
-else console.log(rst);
+console.log(arr.join(" "));

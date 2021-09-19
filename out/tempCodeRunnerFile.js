@@ -1,2 +1,2 @@
-trim().;
+5;
 //# sourceMappingURL=tempCodeRunnerFile.js.map
