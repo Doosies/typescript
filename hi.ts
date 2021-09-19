@@ -1,26 +1,11 @@
 const stdin: string[] = (process.platform ==='linux'
 ? require('fs').readFileSync(0, 'utf-8')
 : `
-15
-push 1
-push 2
-front
-back
-size
-empty
-pop
-pop
-pop
-size
-empty
-pop
-push 3
-empty
-front
+6
 `).trim().split('\n');
 const input = (()=>{
     let line = 0;
-    return ()=> stdin[line++].split(" ");//.map( v => +v);
+    return ()=> stdin[line++];//.split(" ");//.map( v => +v);
 })();
 
 class node{
@@ -84,15 +69,16 @@ class queue{
     };
 }
 
+const n = +input();
 const que = new queue();
-const ans: number[] = [];
-const C = +input();
-for (let i=0; i<C; i++) {
-    const cmd = input();
-    if (cmd[0] === 'push') 
-        que.push(+cmd[1]);
-    else 
-        ans.push(que[cmd[0]]());
+
+for (let i=1; i<n+1; i++) {
+    que.push(i);
 }
 
-console.log(ans.join("\n"));
+while (que.size() > 1) {
+    que.pop();
+    que.push(que.pop());
+}
+
+console.log(que.pop());
