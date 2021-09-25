@@ -1,33 +1,12 @@
 const stdin: string[] = (process.platform ==='linux'
 ? require('fs').readFileSync(0, 'utf-8')
 : `
-22
-front
-back
-pop_front
-pop_back
-push_front 1
-front
-pop_back
-push_back 2
-back
-pop_front
-push_front 10
-push_front 333
-front
-back
-pop_back
-pop_back
-push_back 20
-push_back 1234
-front
-back
-pop_back
-pop_back
+10 10
+1 6 3 2 7 9 8 4 10 5
 `).trim().split('\n');
 const input = (()=>{
     let line = 0;
-    return ()=> stdin[line++].split(" ");//.map( v => +v);
+    return ()=> stdin[line++].split(" ").map( v => +v);
 })();
 
 class node{
@@ -124,17 +103,21 @@ class deque {
     };
 }
 
-const ans: number[] = [];
-const ord = ["push_back", "push_front"];
-const C = +input();
+const [N, M] = input();
 const que = new deque();
+const arr = input();
+let ans = 0;
 
-for (let i=0; i<C; i++) {
-    const [cmd, num] = input();
-    if (ord.some(v => v === cmd))
-        que[cmd](+num);
-    else
-        ans.push(que[cmd]());
-}
+for (let i=0; i<N; i++) 
+    que.push_back(i+1);
 
-console.log(ans.join("\n"));
+arr.forEach( num => {
+    let cnt = 0;
+    while (que.front() !== num) {
+        cnt ++;
+        que.push_back(que.pop_front())
+    }
+    ans += Math.min(cnt, que.size()-cnt);
+    que.pop_front();
+});
+console.log(ans);
