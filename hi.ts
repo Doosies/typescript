@@ -1,12 +1,15 @@
 const stdin: string[] = (process.platform ==='linux'
 ? require('fs').readFileSync(0, 'utf-8')
 : `
-10 10
-1 6 3 2 7 9 8 4 10 5
+1
+RDD
+15
+[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]
+
 `).trim().split('\n');
 const input = (()=>{
     let line = 0;
-    return ()=> stdin[line++].split(" ").map( v => +v);
+    return ()=> stdin[line++];//.split(" ");//.map( v => +v);
 })();
 
 class node{
@@ -103,21 +106,46 @@ class deque {
     };
 }
 
-const [N, M] = input();
-const que = new deque();
-const arr = input();
-let ans = 0;
 
-for (let i=0; i<N; i++) 
-    que.push_back(i+1);
+const C = +input();
+const ans: any[] = [];
 
-arr.forEach( num => {
-    let cnt = 0;
-    while (que.front() !== num) {
-        cnt ++;
-        que.push_back(que.pop_front())
+for (let i=0; i<C; i++) {
+    const ord = input().split("");
+    const len = +input();
+    const d = new deque();
+
+    let isError = false;
+    let isR = false;
+    let arr = input().replace("[","").replace("]","").split(",").map(v=>+v);
+    arr = len === 0 ? [] : arr;
+    arr.forEach( v=> d.push_back(v));
+    
+    ord.forEach( cmd => {
+        if (cmd === 'R') { 
+            isR = !isR;
+        } else if (cmd === 'D') {
+            if (d.size() > 0){
+                if (isR) 
+                d.pop_back();
+                else 
+                d.pop_front();
+            }
+            else
+                isError = true;
+        }
+    });
+
+    if (isError) ans.push("error");
+    else {
+        const tmp: number[] = [];
+        while(!d.empty()) {
+            tmp.push(d.pop_front());
+        }
+        if (isR) ans.push(`[${tmp.reverse()}]`);
+        else ans.push(`[${tmp}]`);
+        
     }
-    ans += Math.min(cnt, que.size()-cnt);
-    que.pop_front();
-});
-console.log(ans);
+}
+
+console.log(ans.join('\n'));
